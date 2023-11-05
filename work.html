@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type ="text" id ="task1" name = "name">
+    <div id = "answer1"></div>
+    <input type="text" id="task2" name="name">
+    <div id="answer2"></div>
+    <button id ="submit">SUBMIT</button>
+    <div id="arrayprint"></div>
+</body>
+<script>
+    const press = document.querySelector("#submit");
+    press.addEventListener("click", async function (e){
+        e.preventDefault();
+        let t1 = document.querySelector("#task1").value;
+        let t2 = document.querySelector("#task2").value;
+        console.log("it works!")
+        document.querySelector("#answer1").textContent = t1;//get the data
+        document.querySelector("#answer2").textContent = t2;
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");//parameters for the data
+
+        var raw = JSON.stringify({//makes usable for request options(THIS IS THE RAW DATA)
+            info1: t1,
+            info2: t2
+        });
+
+        var requestOptions = { //specifying the settings for the data
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+
+        fetch("/api/work", requestOptions) //sending the data
+            .then(response => response.json())
+            .then(result => {
+                console.log("data", result);
+
+               let template = "";
+               result.forEach(beans => {
+                console.log(beans)
+                    template += `
+                        <div>
+                            ${beans.info1}
+                            ${beans.info2}
+
+                        </div>
+       `;
+                });
+                document.querySelector("#arrayprint").innerHTML = template;
+
+               
+                // 
+            })
+            
+            .catch(error => console.log('error', error));
+    });
+    //document.querySelector("#arrayprint").textContent = raw
+    
+
+
+</script>
+
+</html>
